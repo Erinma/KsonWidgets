@@ -47,21 +47,19 @@ public class HdImageView extends View implements GestureDetector.OnGestureListen
 
 
     private void init() {
-        setClickable(true);
+        setClickable(true);//必须加入，确保各手势事件响应
+        mScreeWidht = getResources().getDisplayMetrics().widthPixels;
         gestureDetector = new GestureDetector(getContext(), this);
+        initBitmapOptions();
+    }
+
+    private void initBitmapOptions() {
         mOptions.inJustDecodeBounds = true;
         BitmapFactory.decodeStream(inputStream, null, mOptions);
-
         mOptions.inPreferredConfig = Bitmap.Config.RGB_565;
-
-
         mWidth = mOptions.outWidth;
         mHeight = mOptions.outHeight;
-
-        mScreeWidht = getResources().getDisplayMetrics().widthPixels;
-
         mRect.set(0, 0, mScreeWidht, mHeight);
-
     }
 
     public void setImageView(InputStream inputStream) {
@@ -114,6 +112,14 @@ public class HdImageView extends View implements GestureDetector.OnGestureListen
     }
 
 
+    /**
+     * @param e1        The first down motion event that started the   scrolling.
+     * @param e2        The move motion event that triggered the current onScroll.
+     * @param distanceX The distance along the X axis that has been scrolled   since the last call to onScroll. This is NOT the distance between e1 and e2.
+     *                  在上一次（最后一次）调用onScroll方法沿着X轴所滑动的距离。不是e1和e2之间的距离
+     * @param distanceY The distance along the Y axis that has been scrolled   since the last call to onScroll. This is NOT the distance between e1 and e2.
+     * @return
+     */
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         Log.d("onScroll", "------------------");
