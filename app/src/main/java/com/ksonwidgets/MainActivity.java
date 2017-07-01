@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.ksonwidgets.activity.AutoBannerActivity;
 import com.ksonwidgets.activity.HDImageViewActivity;
+import com.ksonwidgets.activity.KsonViewPagerIndicatorActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +29,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void btn2(View view){
         startActivity(new Intent(this,AutoBannerActivity.class));
+
+    }
+
+    public void btn3(View view){
+        startActivity(new Intent(this,KsonViewPagerIndicatorActivity.class));
 
     }
 

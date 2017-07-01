@@ -21,8 +21,6 @@ import com.ksonwidgets.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.R.attr.tag;
-
 /**
  * Created by kson on 2017/6/30.
  */

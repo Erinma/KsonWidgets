@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ksonwidgets">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -19,7 +19,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.HDImageViewActivity" />
-        <activity android:name=".activity.AutoBannerActivity"></activity>
+        <activity android:name=".activity.AutoBannerActivity" />
+        <activity android:name=".activity.KsonViewPagerIndicatorActivity" />
+        <activity android:name=".TestActivity"></activity>
     </application>
 
 </manifest>

@@ -6,4 +6,8 @@
         <attr name="indicator_margin" format="dimension"></attr>
         <attr name="ratio_wh" format="float"></attr>
     </declare-styleable>
+
+    <declare-styleable name="ViewPagerIndicator">
+        <attr name="item_count" format="integer" />
+    </declare-styleable>
 </resources>
