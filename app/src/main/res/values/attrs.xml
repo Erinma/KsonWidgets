@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AutoBanner">
+        <attr name="indicator_width" format="dimension"></attr>
+        <attr name="indicator_height" format="dimension"></attr>
+        <attr name="indicator_margin" format="dimension"></attr>
+    </declare-styleable>
+</resources>
