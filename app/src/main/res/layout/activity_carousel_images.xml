@@ -5,19 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.ksonwidgets.MainActivity">
+    tools:context="com.ksonwidgets.activity.AutoBannerActivity">
 
-    <Button
+    <com.ksonwidgets.widgets.autobanner.AutoBanner
+        android:id="@+id/images"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="btn1"
-        android:text="加载大图" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="btn2"
-        android:text="图片轮播" />
-
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

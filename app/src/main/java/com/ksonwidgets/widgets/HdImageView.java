@@ -32,6 +32,8 @@ public class HdImageView extends View implements GestureDetector.OnGestureListen
     private int mScreeWidht;//屏幕宽度
 
     private InputStream inputStream;
+    private BitmapRegionDecoder decoder;
+    private Bitmap mRegionDecoderBitmap;
 
     public HdImageView(Context context) {
         super(context);
@@ -60,6 +62,11 @@ public class HdImageView extends View implements GestureDetector.OnGestureListen
         mWidth = mOptions.outWidth;
         mHeight = mOptions.outHeight;
         mRect.set(0, 0, mScreeWidht, mHeight);
+        try {
+            decoder = BitmapRegionDecoder.newInstance(inputStream, false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setImageView(InputStream inputStream) {
@@ -77,21 +84,13 @@ public class HdImageView extends View implements GestureDetector.OnGestureListen
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Bitmap bitmap = regionDecoderBitmap();
-        canvas.drawBitmap(bitmap, 0, 0, null);
+        regionDecoderBitmap();
+        canvas.drawBitmap(mRegionDecoderBitmap, 0, 0, null);
     }
 
 
-    private Bitmap regionDecoderBitmap() {
-        Bitmap bitmap = null;
-        try {
-            BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(inputStream, false);
-            bitmap = decoder.decodeRegion(mRect, mOptions);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return bitmap;
+    private void regionDecoderBitmap() {
+        mRegionDecoderBitmap = decoder.decodeRegion(mRect, mOptions);
 
     }
 
@@ -137,7 +136,6 @@ public class HdImageView extends View implements GestureDetector.OnGestureListen
             mRect.left = 0;
             mRect.right = mScreeWidht;
         }
-
         invalidate();
 
 

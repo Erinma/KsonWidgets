@@ -4,12 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 
+import com.ksonwidgets.activity.AutoBannerActivity;
 import com.ksonwidgets.activity.HDImageViewActivity;
 
 public class MainActivity extends AppCompatActivity {
-    private Button mBtn1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,12 +18,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        mBtn1 = (Button) findViewById(R.id.button1);
     }
 
 
     public void btn1(View view){
         startActivity(new Intent(this,HDImageViewActivity.class));
+
+    }
+
+    public void btn2(View view){
+        startActivity(new Intent(this,AutoBannerActivity.class));
 
     }
 
