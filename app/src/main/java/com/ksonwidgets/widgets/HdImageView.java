@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.renderscript.ScriptGroup;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;

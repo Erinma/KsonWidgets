@@ -219,6 +219,30 @@ public class AutoBanner extends FrameLayout implements ViewPager.OnPageChangeLis
 
     }
 
+    public AutoBanner setAutoBannerAnimation(Class<? extends ViewPager.PageTransformer> transformer) {
+        try {
+            setPageTransformer(true, transformer.newInstance());
+        } catch (Exception e) {
+            Log.e(TAG, "Please set the PageTransformer class");
+        }
+        return this;
+    }
+
+    /**
+     * Set a {@link ViewPager.PageTransformer} that will be called for each attached page whenever
+     * the scroll position is changed. This allows the application to apply custom property
+     * transformations to each page, overriding the default sliding look and feel.
+     *
+     * @param reverseDrawingOrder true if the supplied PageTransformer requires page views
+     *                            to be drawn from last to first instead of first to last.
+     * @param transformer         PageTransformer that will modify each page's animation properties
+     * @return Banner
+     */
+    public AutoBanner setPageTransformer(boolean reverseDrawingOrder, ViewPager.PageTransformer transformer) {
+        mViewPager.setPageTransformer(reverseDrawingOrder, transformer);
+        return this;
+    }
+
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         currentItem = position % count + 1;

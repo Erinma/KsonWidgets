@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.ksonwidgets.R;
 import com.ksonwidgets.widgets.autobanner.AutoBanner;
+import com.ksonwidgets.widgets.autobanner.transformer.AccordionTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +31,8 @@ public class AutoBannerActivity extends AppCompatActivity implements AutoBanner.
         mImgUrls.add("http://www.bz55.com/uploads/allimg/141226/139-141226142542-50.jpg");
 
 
-        //不设置setAuto，不会自动轮播，不设置监听，无法点击
-        mAutoBanner.load(mImgUrls).setOnAutoBannerListener(this).setAuto(3000).display();
+        //不设置setAuto，不会自动轮播，不设置监听，无法点击,动画转换器可以根据需要设置
+        mAutoBanner.load(mImgUrls).setOnAutoBannerListener(this).setAuto(3000).setAutoBannerAnimation(AccordionTransformer.class).display();
 
 
     }
