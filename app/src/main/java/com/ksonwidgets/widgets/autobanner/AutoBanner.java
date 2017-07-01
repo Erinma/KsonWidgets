@@ -2,11 +2,15 @@ package com.ksonwidgets.widgets.autobanner;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,11 +21,14 @@ import com.ksonwidgets.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.tag;
+
 /**
  * Created by kson on 2017/6/30.
  */
 
-public class AutoBanner extends FrameLayout {
+public class AutoBanner extends FrameLayout implements ViewPager.OnPageChangeListener {
+    private static final String TAG = "AutoBanner";
 
     private Context mContext;
     private int mIndicatorWidth, mIndicatorHeight, mIndicatorMargin;
@@ -31,7 +38,17 @@ public class AutoBanner extends FrameLayout {
     private LinearLayout mIndicatorLayout;
     private ViewPager mViewPager;
     private AutoBannerListener mAutoBannerListener;
+    private AutoBannerPagerAdapter mAutoBannerPagerAdapter;
     private int count;
+    private float ratio = 1.78f;//图片宽高比
+
+
+    //自动轮播
+    private boolean isAuto;
+    private Handler mAutoHandler = new Handler();
+    private int currentItem;
+    private int delayTime = 1000;
+
 
     public AutoBanner(Context context) {
         this(context, null);
@@ -56,6 +73,8 @@ public class AutoBanner extends FrameLayout {
         mIndicatorHeight = typedArray.getDimensionPixelSize(R.styleable.AutoBanner_indicator_height, 30);
         mIndicatorMargin = typedArray.getDimensionPixelSize(R.styleable.AutoBanner_indicator_margin, 10);
 
+        ratio = typedArray.getFloat(R.styleable.AutoBanner_ratio_wh, 1.78f);
+
         typedArray.recycle();
 
         View view = LayoutInflater.from(context).inflate(R.layout.auto_banner_layout, this, true);
@@ -77,13 +96,20 @@ public class AutoBanner extends FrameLayout {
         return this;
     }
 
+
+    public AutoBanner setAuto(int time) {
+        this.delayTime = time;
+        this.isAuto = true;
+        return this;
+    }
+
     /**
      * 加载和显示banner
      *
      * @return
      */
     public AutoBanner display() {
-        setImages(mImgUrls);
+        setImages();
         setIndicators();
         return this;
     }
@@ -96,8 +122,70 @@ public class AutoBanner extends FrameLayout {
     }
 
 
-    private void setImages(List<String> mImgUrls) {
+    private void setImages() {
 
+
+        if (count == 0) {
+            return;
+        }
+
+        for (int i = 0; i < count; i++) {
+            ImageView imageView = new ImageView(mContext);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            mImageViews.add(imageView);
+        }
+
+        if (mAutoBannerPagerAdapter == null) {
+            mAutoBannerPagerAdapter = new AutoBannerPagerAdapter();
+            mViewPager.addOnPageChangeListener(this);
+        }
+
+        mViewPager.setAdapter(mAutoBannerPagerAdapter);
+        mViewPager.setCurrentItem(0);
+
+        if (isAuto) {
+            startAuto(delayTime);
+        }
+
+
+    }
+
+    /**
+     * 自动轮播
+     */
+    private void startAuto(int time) {
+        mAutoHandler.removeCallbacks(task);
+        mAutoHandler.postDelayed(task, time);
+    }
+
+    private void stopAuto() {
+        mAutoHandler.removeCallbacks(task);
+    }
+
+    private final Runnable task = new Runnable() {
+        @Override
+        public void run() {
+            if (count > 1 && isAuto) {
+
+                if (currentItem >= count) {
+                    currentItem = 0;
+                }
+                mViewPager.setCurrentItem(currentItem);
+                mAutoHandler.postDelayed(task, delayTime);
+                Log.i(TAG, "curr:" + currentItem + " count:" + count);
+            }
+        }
+    };
+
+
+    /**
+     * 计算viewpager的宽高比，以便适配
+     */
+    private void initViewPagerParams() {
+        ViewGroup.LayoutParams params = mViewPager.getLayoutParams();
+        params.width = getMeasuredWidth();
+        params.height = (int) (params.width / ratio);
+        mViewPager.setLayoutParams(params);
 
     }
 
@@ -115,7 +203,11 @@ public class AutoBanner extends FrameLayout {
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(mIndicatorWidth, mIndicatorHeight);
             layoutParams.leftMargin = mIndicatorMargin;
             layoutParams.rightMargin = mIndicatorMargin;
-            imageView.setImageResource(R.drawable.indicator_unselect);
+            if (i == 0) {
+                imageView.setImageResource(R.drawable.indicator_selected);
+            } else {
+                imageView.setImageResource(R.drawable.indicator_unselect);
+            }
 
             mIndicatorViews.add(imageView);
 
@@ -127,16 +219,64 @@ public class AutoBanner extends FrameLayout {
 
     }
 
-    class ViewPagerAdapter extends PagerAdapter {
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        currentItem = position % count + 1;
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+
+        for (int i = 0; i < count; i++) {
+
+            if (i == position) {
+                mIndicatorViews.get(i).setImageResource(R.drawable.indicator_selected);
+            } else {
+                mIndicatorViews.get(i).setImageResource(R.drawable.indicator_unselect);
+            }
+
+        }
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+    class AutoBannerPagerAdapter extends PagerAdapter {
 
         @Override
         public int getCount() {
-            return 0;
+            return mImageViews.size();
         }
 
         @Override
         public boolean isViewFromObject(View view, Object object) {
-            return false;
+
+            return view == object;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, final int position) {
+            container.addView(mImageViews.get(position));
+            ImageView view = (ImageView) mImageViews.get(position);
+            Glide.with(mContext).load(mImgUrls.get(position)).into(view);
+            if (mAutoBannerListener != null) {
+                view.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mAutoBannerListener.onClickListener(position);
+                    }
+                });
+            }
+            return view;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
         }
     }
 
@@ -155,9 +295,22 @@ public class AutoBanner extends FrameLayout {
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        initViewPagerParams();
+    }
 
-        super.onLayout(changed, l, t, r, b);
-
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (isAuto) {
+            int action = ev.getAction();
+            if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL
+                    || action == MotionEvent.ACTION_OUTSIDE) {
+                startAuto(delayTime);
+            } else if (action == MotionEvent.ACTION_DOWN) {
+                stopAuto();
+            }
+        }
+        return super.dispatchTouchEvent(ev);
     }
 }

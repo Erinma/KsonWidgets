@@ -4,5 +4,6 @@
         <attr name="indicator_width" format="dimension"></attr>
         <attr name="indicator_height" format="dimension"></attr>
         <attr name="indicator_margin" format="dimension"></attr>
+        <attr name="ratio_wh" format="float"></attr>
     </declare-styleable>
 </resources>
