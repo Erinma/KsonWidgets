@@ -40,4 +40,16 @@ public class AutoBannerActivity extends AppCompatActivity implements AutoBanner.
     public void onClickListener(int postion) {
         Toast.makeText(AutoBannerActivity.this, "点击了：" + postion + "位置", Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAutoBanner.startAuto();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mAutoBanner.stopAuto();
+    }
 }

@@ -144,7 +144,7 @@ public class AutoBanner extends FrameLayout implements ViewPager.OnPageChangeLis
         mViewPager.setCurrentItem(0);
 
         if (isAuto) {
-            startAuto(delayTime);
+            startAuto();
         }
 
 
@@ -153,12 +153,12 @@ public class AutoBanner extends FrameLayout implements ViewPager.OnPageChangeLis
     /**
      * 自动轮播
      */
-    private void startAuto(int time) {
+    public void startAuto() {
         mAutoHandler.removeCallbacks(task);
-        mAutoHandler.postDelayed(task, time);
+        mAutoHandler.postDelayed(task, delayTime);
     }
 
-    private void stopAuto() {
+    public void stopAuto() {
         mAutoHandler.removeCallbacks(task);
     }
 
@@ -306,7 +306,7 @@ public class AutoBanner extends FrameLayout implements ViewPager.OnPageChangeLis
             int action = ev.getAction();
             if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL
                     || action == MotionEvent.ACTION_OUTSIDE) {
-                startAuto(delayTime);
+                startAuto();
             } else if (action == MotionEvent.ACTION_DOWN) {
                 stopAuto();
             }
